@@ -10,7 +10,7 @@ public class DBTest {
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 
-		connection = DriverManager.getConnection("jdbc:sqlite:/home/admin/sqlite3.db");
+		connection = DriverManager.getConnection("jdbc:sqlite:../WebProject/sqlite3.db");
 		Statement statement = connection.createStatement();
 		statement.setQueryTimeout(30);
 //		statement.execute("insert into DB_TEST values('DB Test!!')");
