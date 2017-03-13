@@ -33,14 +33,14 @@ public class DbWebSample extends HttpServlet {
 
 			Connection connection = null;
 
-			connection = DriverManager.getConnection("jdbc:sqlite:/home/admin/sqlite3.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:../sqlite3.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
+			// statement.execute("create table DB_TEST(ID text primary key)");
 			// statement.execute("insert into DB_TEST values('DB Test!!')");
 			
-			statement.execute("create table USER_TBL(username text primary key, memo text, date text)");
 			
-			ResultSet resultSet = statement.executeQuery("select * from USER_TBL");
+			ResultSet resultSet = statement.executeQuery("select * from DB_TEST");
 			while (resultSet.next()) {
 				response.getWriter().append(resultSet.getString("ID"));
 			}
