@@ -1,5 +1,5 @@
 package mobile.phone.company;
 
-public class Au {
+public class Au extends CarrierBase {
 
 }
