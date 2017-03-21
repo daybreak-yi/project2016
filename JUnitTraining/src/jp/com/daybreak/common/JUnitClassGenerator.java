@@ -20,9 +20,11 @@ public class JUnitClassGenerator {
 	protected static String LINE_SEPARATOR = System.lineSeparator();
 
 	/** CLASS_TEMPLATE */
-	protected static String CLASS_TEMPLATE = "" + "{PACKAGE};" + LINE_SEPARATOR 
-			+ "" + LINE_SEPARATOR 
-			+ "import static org.junit.Assert.assertEquals;" + LINE_SEPARATOR 
+	protected static String CLASS_TEMPLATE = ""
+			+ "{PACKAGE};" + LINE_SEPARATOR 
+			+ "" + LINE_SEPARATOR
+			+ "import static org.junit.Assert.assertEquals;" + LINE_SEPARATOR
+			+ "import static org.junit.Assert.fail;"+ LINE_SEPARATOR
 			+ "" + LINE_SEPARATOR 
 			+ "import org.junit.Test;" + LINE_SEPARATOR 
 			+ "" + LINE_SEPARATOR + "/**" + LINE_SEPARATOR
@@ -40,15 +42,22 @@ public class JUnitClassGenerator {
 			+ "	 * {METHOD_NAME}のテスト" + LINE_SEPARATOR
 			+ "	 */" + LINE_SEPARATOR
 			+ "	@Test" + LINE_SEPARATOR
-			+ "	public void test{METHOD_NAME2}() throws Exception {" + LINE_SEPARATOR 
-			+ "		/* 変数初期化 */" + LINE_SEPARATOR
+			+ "	public void test{METHOD_NAME2}() {" + LINE_SEPARATOR 
+			+ "		try {" + LINE_SEPARATOR
+			+ "			/* 変数初期化 */" + LINE_SEPARATOR
 			+ "{PARAMS_AREA}" + LINE_SEPARATOR
 			+ "" + LINE_SEPARATOR 
-			+ "		/* テスト実行部 */" + LINE_SEPARATOR
+			+ "			/* テスト実行部 */" + LINE_SEPARATOR
 			+ "{EXEC_AREA}" + LINE_SEPARATOR 
 			+ "" + LINE_SEPARATOR 
-			+ "		/* 比較部 */" + LINE_SEPARATOR
-			+ "		assertEquals({EXPECTED}, result);" + LINE_SEPARATOR 
+			+ "			/* 比較部 */" + LINE_SEPARATOR
+			+ "			assertEquals({EXPECTED}, result);" + LINE_SEPARATOR
+			+ "{EXCEPTION_AREA}"
+			+ "		} catch(final Throwable e) {" + LINE_SEPARATOR
+			+ "			fail(\"想定しないエラーが発生\");" + LINE_SEPARATOR
+			+ "		} finally {" + LINE_SEPARATOR
+			+ "			// 必要に応じて処理を記載" + LINE_SEPARATOR
+			+ "		}" + LINE_SEPARATOR
 			+ "	}" + LINE_SEPARATOR + LINE_SEPARATOR;
 
 	/** PACKAGE */
@@ -72,6 +81,9 @@ public class JUnitClassGenerator {
 	/** EXEC_AREA */
 	protected static String EXEC_AREA = "{EXEC_AREA}";
 	
+	/** EXCEPTION_AREA */
+	protected static String EXCEPTION_AREA = "{EXCEPTION_AREA}";
+	
 	/** EXPECTED */
 	protected static String EXPECTED = "{EXPECTED}";
 
@@ -88,6 +100,10 @@ public class JUnitClassGenerator {
 
 			final Class<?> returnType = method.getReturnType();
 			if (returnType == void.class) {
+				continue;
+			}
+			
+			if (!Modifier.isPublic(method.getModifiers())) {
 				continue;
 			}
 
@@ -108,91 +124,91 @@ public class JUnitClassGenerator {
 				if (paramClazz == int.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == long.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0l;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0l;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == float.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0.0f;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0.0f;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == double.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0.0d;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0.0d;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == boolean.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = false;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = false;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == Integer.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == Long.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0l;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0l;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == Float.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0.0f;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0.0f;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == Double.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = 0.0d;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = 0.0d;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == Boolean.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = false;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = false;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == BigDecimal.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = BigDecimal.ZERO;", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = BigDecimal.ZERO;", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				if (paramClazz == String.class) {
 					variable = String.format("arg%d", i);
 					variables.add(variable);
-					paramsBuffer.append(String.format("\t\tfinal %s %s = \"\";", paramClazz.getSimpleName(), variable));
+					paramsBuffer.append(String.format("\t\t\tfinal %s %s = \"\";", paramClazz.getSimpleName(), variable));
 					continue;
 				}
 
 				// それ以外の型
 				variable = String.format("arg%d", i);
 				variables.add(variable);
-				paramsBuffer.append(String.format("\t\tfinal %s %s = new %s();", paramClazz.getSimpleName(), variable, paramClazz.getSimpleName()));
+				paramsBuffer.append(String.format("\t\t\tfinal %s %s = new %s();", paramClazz.getSimpleName(), variable, paramClazz.getSimpleName()));
 				continue;
 			}
 			methodTemplate = methodTemplate.replace(PARAMS_AREA, paramsBuffer.toString());
@@ -201,15 +217,15 @@ public class JUnitClassGenerator {
 			final StringBuffer execBuffer = new StringBuffer();
 			if (Modifier.isStatic(method.getModifiers())) {
 				// 静的メソッド
-				execBuffer.append(String.format("\t\tfinal %s result = %s.%s(", returnType.getSimpleName(), clazz.getSimpleName(), name));
+				execBuffer.append(String.format("\t\t\tfinal %s result = %s.%s(", returnType.getSimpleName(), clazz.getSimpleName(), name));
 			} else {
 				// インスタンスメソッド
 				String w = "";
 				w = w + clazz.getSimpleName().substring(0, 1).toLowerCase();
 				w = w + clazz.getSimpleName().substring(1);
-				execBuffer.append(String.format("\t\tfinal %s %s = new %s();", clazz.getSimpleName(), w, clazz.getSimpleName()));
+				execBuffer.append(String.format("\t\t\tfinal %s %s = new %s();", clazz.getSimpleName(), w, clazz.getSimpleName()));
 				execBuffer.append(LINE_SEPARATOR);
-				execBuffer.append(String.format("\t\tfinal %s result = %s.%s(", returnType.getSimpleName(), w, name));
+				execBuffer.append(String.format("\t\t\tfinal %s result = %s.%s(", returnType.getSimpleName(), w, name));
 			}
 
 			if (variables.size() > 0) {
@@ -255,13 +271,27 @@ public class JUnitClassGenerator {
 			}
 			
 			methodTemplate = methodTemplate.replace(EXPECTED, expected);
+			
+			// 例外
+			final StringBuffer exceptionBuffer = new StringBuffer();
+			final List<Class<?>> exceptionTypes = Arrays.asList(method.getExceptionTypes());
+			int j = 1;
+			for (final Class<?> exceptionType : exceptionTypes) {
+				exceptionBuffer.append("\t\t");
+				exceptionBuffer.append(String.format("} catch (final %s e%d) {", exceptionType.getSimpleName(), j));
+				exceptionBuffer.append(LINE_SEPARATOR);
+				exceptionBuffer.append("\t\t\t//ここに固有の例外処理を記載");
+				exceptionBuffer.append(LINE_SEPARATOR);
+				exceptionBuffer.append("\t\t\tfail(\"\");");
+				exceptionBuffer.append(LINE_SEPARATOR);
+				j++;
+			}
+			methodTemplate = methodTemplate.replace(EXCEPTION_AREA, exceptionBuffer.toString());
 			methodBuffer.append(methodTemplate);
 		}
 
 		template = template.replace(METHOD_AREA, methodBuffer.toString());
 
 		System.out.println(template);
-
 	}
-
 }
