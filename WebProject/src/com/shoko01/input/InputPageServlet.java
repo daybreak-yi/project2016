@@ -3,10 +3,10 @@ package com.shoko01.input;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 
 @WebServlet("/input/input.jsp")
 public class InputPageServlet extends AbstractBaseServlet {
@@ -27,7 +27,7 @@ public class InputPageServlet extends AbstractBaseServlet {
 	/**
 	 * Webページ処理
 	 * 
-	 * @param request {@link HttpServletRequest}
+	 * @param request {@link Map}
 	 * @param response {@link StringBuffer}
 	 * @param statement {@link Statement}
 	 * @throws ServletException
@@ -35,7 +35,7 @@ public class InputPageServlet extends AbstractBaseServlet {
 	 * @throws SQLException
 	 */
 	@Override
-	protected StringBuffer doExec(final HttpServletRequest request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException {
+	protected StringBuffer doExec(final Map<String, String> request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException {
 		response.append("<form action=\"regist.jsp\" method=\"get\">");
 		response.append("<table boder=\"2\">");
 		response.append("<tr>");

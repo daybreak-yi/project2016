@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -70,7 +73,18 @@ public abstract class AbstractBaseServlet extends HttpServlet {
 
 			final String pageTitle = getPageTitle();
 
-			final StringBuffer responseBuffer = doExec(request, new StringBuffer(), statement);
+			final Map<String, String> map = new HashMap<String, String>();
+			final Map<String, String[]> parameterMap = request.getParameterMap();
+			final Set<String> keys = parameterMap.keySet();
+			for (final String key : keys) {
+				final String[] values = parameterMap.get(key);
+				if (values == null || values.length <= 0) {
+					map.put(key, null);
+					continue;
+				}
+				map.put(key, values[0]);
+			}
+			final StringBuffer responseBuffer = doExec(map, new StringBuffer(), statement);
 
 			response.getWriter().append("<html>");
 			response.getWriter().append("<head>");
@@ -113,14 +127,14 @@ public abstract class AbstractBaseServlet extends HttpServlet {
 	/**
 	 * Webページ処理
 	 * 
-	 * @param request {@link HttpServletRequest}
+	 * @param request {@link Map}
 	 * @param response {@link StringBuffer}
 	 * @param statement {@link Statement}
 	 * @throws ServletException
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	protected abstract StringBuffer doExec(final HttpServletRequest request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException;
+	protected abstract StringBuffer doExec(final Map<String, String> request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException;
 
 	/**
 	 * 事後処理

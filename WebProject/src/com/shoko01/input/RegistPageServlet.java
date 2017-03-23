@@ -5,10 +5,10 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.shoko01.input.common.DbProcessor;
@@ -33,7 +33,7 @@ public class RegistPageServlet extends AbstractBaseServlet {
 	/**
 	 * Webページ処理
 	 * 
-	 * @param request {@link HttpServletRequest}
+	 * @param request {@link Map}
 	 * @param response {@link StringBuffer}
 	 * @param statement {@link Statement}
 	 * @throws ServletException
@@ -41,12 +41,12 @@ public class RegistPageServlet extends AbstractBaseServlet {
 	 * @throws SQLException
 	 */
 	@Override
-	protected StringBuffer doExec(final HttpServletRequest request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException {
+	protected StringBuffer doExec(final Map<String, String> request, final StringBuffer response, final Statement statement) throws ServletException, IOException, SQLException {
 
-		final String name = request.getParameter("name");
-		final String age = parse(request.getParameter("age"));
-		final String sex = parse(request.getParameter("sex"));
-		final String zipCode = getZipCode(request.getParameter("zip_code"));
+		final String name = request.get("name");
+		final String age = parse(request.get("age"));
+		final String sex = parse(request.get("sex"));
+		final String zipCode = getZipCode(request.get("zip_code"));
 
 		final List<VNumeric> list = DbProcessor.select(statement, "SELECT MAX(ID) AS NUMERIC FROM M_CUSTOMER", VNumeric.class);
 		final BigDecimal id = list.get(0).getNumeric().add(BigDecimal.ONE);
